@@ -2,13 +2,8 @@ import pandas as pd
 import locale
 import re
 
-
 # Set the locale to Turkish (Turkey)
 locale.setlocale(locale.LC_ALL, 'tr_TR')
-
-df = pd.read_excel('data/Hesap Hareketleri_20220801_20230118.xlsx', skiprows=8)
-do = pd.read_excel('data/Bilsem_12_12_2022 14_07_53.xlsx', sheet_name='genel liste')
-
 
 def clear(x):
     non_alpha = r'[^a-zA-ZçğıöşüÇĞİÖŞÜ\u00E7\u011F\u0131\u00F6\u015F\u00FC\u00C7\u011E\u0130\u00D6\u015E\u00DC]'
@@ -73,9 +68,13 @@ def aciklama_tokenize(x):
     
     return ret
 
+
+df = pd.read_excel('data/Hesap Hareketleri_20220801_20230118.xlsx', skiprows=8)
+do = pd.read_excel('data/Bilsem_12_12_2022 14_07_53.xlsx', sheet_name='genel liste')
+dfc = df.assign(Açıklama2=df.Açıklama.apply(lambda x: clear(x)))
+
 #dfc.iloc[477:478].apply(lambda x: aciklama_tokenize(x.Açıklama2), axis=1)
 dfc.iloc[477:478].assign(lambda x: x.apply(lambda y: aciklama_tokenize(y.Açıklama2), axis=1))
 
-
-
-dfc = df.assign(Açıklama2=df.Açıklama.apply(lambda x: clear(x)))
+dfdbl = dfc.iloc[dbl].apply(lambda x: aciklama_tokenize(x))
+dfdbl
